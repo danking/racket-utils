@@ -20,7 +20,13 @@
 (define-struct some (v))
 (define-struct none ())
 
-(define-struct set (ht join-proc equal?-proc similar?-proc hash-code-proc) #:transparent)
+(define-struct set (ht join-proc equal?-proc similar?-proc hash-code-proc)
+  #:transparent
+  #:property prop:sequence (lambda (s)
+                             (in-list (for/list ([(k maybe-v) (in-dict (set-ht s))])
+                                        (match maybe-v
+                                          ((some v) v)
+                                          ((none) (error 'in-set/similar "sets should never contains (none)")))))))
 
 (define (set-update-hash st ht)
   (match-let ([(set _ j e s hc) st])
