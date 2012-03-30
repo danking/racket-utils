@@ -5,7 +5,8 @@
          set-get-similar
          set-add
          set-remove/similar
-         set-union)
+         set-union
+         set-empty?)
 
 ;; (make-set [Hash AState [Option Astate]])
 ;; The ht is a hash table whose equality predicate checks for state similarity,
@@ -85,6 +86,9 @@
             equal?
             similar?
             hash-code))
+
+(define (set-empty? s)
+  (= 0 (dict-count (set-ht s))))
 
 (define-syntax set/similar
   (syntax-rules ()

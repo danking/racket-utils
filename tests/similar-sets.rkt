@@ -69,3 +69,21 @@
                          (set join eq? similar? hash-code 25 32 47)))
             32)
            33)
+
+
+;; empty?
+(check-false (let ((join (lambda (x y) x)))
+               (set-empty? (set-union (set join eq? eq? equal-hash-code 1 2 3)
+                                                 (set join eq? eq? equal-hash-code 2 3 4)))))
+(check-false (set-empty?
+              (let ((join (lambda (x y) (max x y)))
+                    (similar? (lambda (x y) (= (floor (/ x 10)) (floor (/ y 10)))))
+                    (hash-code (lambda (x) (equal-hash-code (floor (/ x 10))))))
+                (set-union (set join eq? similar? hash-code 1 21 33)
+                           (set join eq? similar? hash-code 25 32 47)))))
+(check-true (set-empty?
+             (let ((join (lambda (x y) (max x y)))
+                   (similar? (lambda (x y) (= (floor (/ x 10)) (floor (/ y 10)))))
+                   (hash-code (lambda (x) (equal-hash-code (floor (/ x 10))))))
+               (set-union (set join eq? similar? hash-code)
+                          (set join eq? similar? hash-code)))))
