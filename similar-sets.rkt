@@ -59,7 +59,7 @@
     ((some v2) (dict-set ht v (some (custom-join v v2))))
     ((none)    (dict-set ht v (some v)))))
 (define (set-remove/similar s v)
-  (set-update-hash s (dict-set (set-ht s) v (none))))
+  (set-update-hash s (dict-remove (set-ht s) v)))
 (define set-union
   ;; this was shamelessly stolen from collects/racket/set.rkt
   (case-lambda
