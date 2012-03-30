@@ -1,6 +1,7 @@
 #lang racket
 (require "option.rkt")
 (provide (rename-out (set/similar set))
+         set-get-one/rest
          set-contains/similar?
          set-contains/equal?
          set-get-similar
@@ -27,8 +28,14 @@
 (define (set-update-hash st ht)
   (match-let ([(set _ j e s hc) st])
     (make-set ht j e s hc)))
-
-
+;; set-get-one/rest : [SimilarSet X] -> [Option [List X [SimilarSet x]]]
+(define (set-get-one/rest s)
+  (let* ((ht (set-ht s))
+         (index (dict-iterate-first ht))
+         (maybe-value (dict-iterate-value ht index)))
+    (match maybe-value
+      ((some value) (some (list value (set-remove/similar s value))))
+      ((none)       (none)))))
 (define (set-contains/similar? s v)
   (match (dict-ref (set-ht s) v (none))
     ((some _) #t)
@@ -41,9 +48,7 @@
       ((some v2) (custom-equal? v v2))
       ((none) #f))))
 (define (set-get-similar s v)
-  (match (dict-ref (set-ht s) v (none))
-    ((some v2) v2)
-    ((none) (error 'set-get-similar "no similar element!"))))
+  (dict-ref (set-ht s) v (none)))
 (define (set-add s v)
   (let ((ht (set-ht s))
         (custom-join (set-join-proc s)))
