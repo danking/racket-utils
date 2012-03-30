@@ -47,6 +47,7 @@
     (match option
       ((some v2) (custom-equal? v v2))
       ((none) #f))))
+;; set-get-similar : SimilarSet X -> [Option X]
 (define (set-get-similar s v)
   (dict-ref (set-ht s) v (none)))
 (define (set-add s v)
