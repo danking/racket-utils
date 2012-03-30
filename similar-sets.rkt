@@ -1,4 +1,5 @@
 #lang racket
+(require "option.rkt")
 (provide (rename-out (set/similar set))
          set-contains/similar?
          set-contains/equal?
@@ -14,11 +15,6 @@
 ;; indicating the state is not in the set, or an astate indicating precisely
 ;; which astate is in the set
 
-;; An [Option X] is either
-;;  - (some X), or
-;;  - (none)
-(define-struct some (v))
-(define-struct none ())
 
 (define-struct set (ht join-proc equal?-proc similar?-proc hash-code-proc)
   #:transparent
@@ -34,7 +30,10 @@
 
 
 (define (set-contains/similar? s v)
-  (some? (dict-ref (set-ht s) v (none))))
+  (match (dict-ref (set-ht s) v (none))
+    ((some _) #t)
+    ((none)   #f)))
+
 (define (set-contains/equal? s v)
   (let ((option (dict-ref (set-ht s) v (none)))
         (custom-equal? (set-equal?-proc s)))
