@@ -8,7 +8,8 @@
          set-add
          set-remove/similar
          set-union
-         set-empty?)
+         set-empty?
+         get-basic-set)
 
 ;; (make-set [Hash AState [Option Astate]])
 ;; The ht is a hash table whose equality predicate checks for state similarity,
@@ -25,14 +26,17 @@
                                           ((some v) v)
                                           ((none) (error 'in-set/similar "sets should never contains (none)")))))))
 
+(define (get-basic-set s)
+  (for/set ([e s]) e))
+
 (define (set-update-hash st ht)
   (match-let ([(set _ j e s hc) st])
-    (make-set ht j e s hc)))
+             (make-set ht j e s hc)))
 ;; set-get-one/rest : [SimilarSet X] -> [Option [List X [SimilarSet x]]]
 (define (set-get-one/rest s)
   (let* ((ht (set-ht s))
          (index (dict-iterate-first ht))
-         (maybe-value (dict-iterate-value ht index)))
+         (maybe-value (if index (dict-iterate-value ht index) (none))))
     (match maybe-value
       ((some value) (some (list value (set-remove/similar s value))))
       ((none)       (none)))))
