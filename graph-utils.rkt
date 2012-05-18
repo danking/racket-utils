@@ -16,12 +16,12 @@
                 (find-sinks (set-union workset unseen-succs) (set-add seen e) sinks))))))
   (find-sinks sources (set) (set)))
 
-(define (graph-fixed-point! initial-set succ-proc new-info? update)
+(define (graph-fixed-point! initial-set succ-proc new-info? update!)
   (workset-loop! initial-set (current workset)
     (for/fold ((workset workset))
         ((succ (succ-proc current)))
       (cond [(new-info? succ current)
-             (update succ current)
+             (update! succ current)
              (set-add workset succ)]
             [else workset]))))
 
