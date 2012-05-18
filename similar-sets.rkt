@@ -9,7 +9,8 @@
          set-remove/similar
          set-union
          set-empty?
-         get-basic-set)
+         get-basic-set
+         set-count)
 
 ;; (make-set [Hash AState [Option Astate]])
 ;; The ht is a hash table whose equality predicate checks for state similarity,
@@ -28,6 +29,8 @@
 
 (define (get-basic-set s)
   (for/set ([e s]) e))
+(define (set-count s)
+  (dict-count (set-ht s)))
 
 (define (set-update-hash st ht)
   (match-let ([(set _ j e s hc) st])
