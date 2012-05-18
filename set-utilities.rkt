@@ -1,5 +1,11 @@
 #lang racket
-(provide set-get-one/rest)
+(provide set-get-one/rest
+         get-set-constructor)
+
+(define (get-set-constructor s)
+  (cond [(set-eq? s) seteq]
+        [(set-eqv? s) seteqv]
+        [(set-equal? s) set]))
 
 (define (set-get-one/rest s)
   (let* ((e (for/first ((e (in-set s))) e))
