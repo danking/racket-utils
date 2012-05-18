@@ -41,8 +41,13 @@
          (index (dict-iterate-first ht))
          (maybe-value (if index (dict-iterate-value ht index) (none))))
     (match maybe-value
-      ((some value) (some (list value (set-remove/similar s value))))
-      ((none)       (none)))))
+      ((some value)
+       (when (= (set-count (set-remove/similar s value)) (set-count s))
+         (error 'set-get-one/rest
+                "The set should have decreased in size but did not (value ~v, set ~v)"
+                value set))
+       (some (list value (set-remove/similar s value))))
+      ((none) (none)))))
 (define (set-contains/similar? s v)
   (match (dict-ref (set-ht s) v (none))
     ((some _) #t)
