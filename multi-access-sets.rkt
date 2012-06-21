@@ -66,11 +66,12 @@
 (define mas-primary-set multi-access-set-primary)
 (define-syntax make-multi-access-set
   (syntax-rules ()
-    ((_ (name lens) ...)
-     (multi-access-set (set)
-                       (for/hash ((n (list 'name ...))
-                                  (l (list lens ...)))
-                         (values n (empty-property-set l)))))))
+    ((_ ((name lens) ...) element ...)
+     (mas-add* (multi-access-set (set)
+                                 (for/hash ((n (list 'name ...))
+                                            (l (list lens ...)))
+                                   (values n (empty-property-set l))))
+               element ...))))
 
 (define (pointwise-lift mas set-f ps-f . args)
   (match mas
@@ -82,6 +83,10 @@
   (pointwise-lift mas
                   (lambda (s) (set-add s v))
                   (lambda (ps) (ps-add ps v))))
+(define (mas-add* mas . vs)
+  (for/fold ([mas mas])
+            ([v vs])
+    (mas-add mas v)))
 (define (mas-remove mas v)
   (pointwise-lift mas set-remove ps-remove v))
 (define (mas-contains? mas v)
