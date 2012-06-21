@@ -32,7 +32,7 @@
 (define (ps-get-similar ps v)
   (match ps
     ((property-set map lens)
-     (dict-ref map (lens v)))))
+     (dict-ref map (lens v) (set)))))
 (define (ps-add ps v)
   (match ps
     ((property-set map lens)
