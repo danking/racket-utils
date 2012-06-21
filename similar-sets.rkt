@@ -1,6 +1,7 @@
 #lang racket
 (require "option.rkt")
 (provide (rename-out (set/similar set))
+         set-ht
          set-get-one/rest
          set-contains/similar?
          set-contains/equal?
@@ -11,6 +12,7 @@
          set-empty?
          get-basic-set
          set-count)
+
 
 ;; (make-set [Hash AState [Option Astate]])
 ;; The ht is a hash table whose equality predicate checks for state similarity,
