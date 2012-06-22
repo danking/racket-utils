@@ -57,12 +57,15 @@
          (property-set (dict-set map k (set-union (dict-ref map k (set)) v))
                        lens1))))))
 
+(define (write-mas t port mode)
+  (write (multi-access-set-primary t) port))
 ;; A [MultiAccessSet X] or [MAS X]
 ;;   (multi-access-set [SetOf X]
 ;;                     [Hash Symbol [PropertySet X]])
 (struct multi-access-set (primary prop-sets)
         #:property prop:sequence (lambda (mas)
-                                   (in-set (multi-access-set-primary mas))))
+                                   (in-set (multi-access-set-primary mas)))
+        #:property prop:custom-write write-mas)
 (define mas-primary-set multi-access-set-primary)
 (define-syntax make-multi-access-set
   (syntax-rules ()
