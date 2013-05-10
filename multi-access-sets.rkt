@@ -49,7 +49,7 @@
      (unless (eq? lens1 lens2)
        (error 'ps-union
               "cannot union to property sets which don't have eq? lenses"))
-     (let-values ([(map1 map2) (if (< (set-count map1 map2))
+     (let-values ([(map1 map2) (if (< (set-count map1) (set-count map2))
                                    (values map1 map2)
                                    (values map2 map1))])
        (for/fold ([map map2])
