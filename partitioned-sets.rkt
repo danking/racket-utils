@@ -10,6 +10,7 @@
          pset-count
          pset-partition-count
          pset-remove
+         pset-get-one/rest
          in-pset
          in-pset-partitions)
 (module+ test (require rackunit))
@@ -200,3 +201,44 @@
   (check-false (pset-empty? (pset-remove (pset-add mt-pset 5) 10)))
   (check-false (pset-empty? (pset-remove (pset-add mt-pset 5) 10)))
   (check-false (pset-empty? (pset-remove (pset-add (pset-add mt-pset 5) 6) 5))))
+
+;; pset-get-one/rest : [PartitionedSet X] -> X [PartitionedSet X]
+;;
+;; Returns one element from the partitioned set S and a partitioned set
+;; containing all the elements in S except for the aforementioned element.
+;;
+;; This is useful for workset algorithms.
+;;
+;; Throws an error if the set has no elements.
+(define (pset-get-one/rest S)
+  (let* ((ht (partitioned-set-ht S))
+         (index (dict-iterate-first ht))
+         (_ (unless index (error 'pset-get-one/rest
+                                 "given partitioned set is empty")))
+         (a-partition (dict-iterate-value ht index))
+         (value (set-first a-partition)))
+    (values value (pset-remove S value))))
+(module+ test
+  (let-values (((value S) (pset-get-one/rest (pset-add mt-pset 5))))
+    (check-equal? value 5)
+    (check-equal? S mt-pset))
+  (let-values (((value S) (pset-get-one/rest (pset-add
+                                              (pset-add
+                                               mt-pset
+                                               5)
+                                              10))))
+    (check-true (or (and (equal? value 5)
+                         (equal? S (pset-add mt-pset 10)))
+                    (and (equal? value 10)
+                         (equal? S (pset-add mt-pset 5)))))
+    (check-true (or (equal? S (pset-add mt-pset 5))
+                    (equal? S (pset-add mt-pset 10)))))
+  (let-values (((value S) (pset-get-one/rest (pset-add
+                                              (pset-add
+                                               mt-pset
+                                               5)
+                                              8))))
+    (check-true (or (and (equal? value 5)
+                         (equal? S (pset-add mt-pset 8)))
+                    (and (equal? value 8)
+                         (equal? S (pset-add mt-pset 5)))))))
