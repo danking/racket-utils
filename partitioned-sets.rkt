@@ -187,7 +187,7 @@
 
 ;; pset-remove : [PartitionedSet X] X -> [PartitionedSet X]
 ;;
-;; Returns a set containing all the elements in s save for the elements
+;; Returns a set containing all the elements in s save for the element v
 (define (pset-remove s v)
   (let* ((ht (partitioned-set-ht s))
          (partition (dict-ref ht v (set))))
