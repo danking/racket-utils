@@ -34,11 +34,33 @@
             (set-union s partition))))
 (define (in-pset-partitions s)
   (in-dict-values (partitioned-set-ht s)))
+;; Writer
+(define (write-paritioned-set S port mode)
+  (write-string "(partitioned-set " port)
+  (for ((element (in-pset S)))
+    (write element port)
+    (write-string " " port))
+  (write-string ")" port))
+(define (partitioned-set-equal? S1 S2 recur)
+  (and (for/and ((element (in-pset S1)))
+         (pset-contains? S1 element))
+       (for/and ((element (in-pset S2)))
+         (pset-contains? S2 element))))
+(define (partitioned-set-hash S recur)
+  (recur (for/list ((element (in-pset S))) element)))
+(define (partitioned-set-hash2 S recur)
+  (recur (reverse (for/list ((element (in-pset S))) element))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; The PartitionedSet structure
 (struct partitioned-set (ht)
         #:transparent
-        #:property prop:sequence in-pset)
+        #:property prop:sequence in-pset
+        #:methods gen:custom-write
+        [(define write-proc write-paritioned-set)]
+        #:methods gen:equal+hash
+        [(define equal-proc partitioned-set-equal?)
+         (define hash-proc partitioned-set-hash)
+         (define hash2-proc partitioned-set-hash2)])
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (module+ test
   (define mt-pset (make-partitioned-set (lambda (x y)
