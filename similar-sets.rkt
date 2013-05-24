@@ -13,6 +13,17 @@
          get-basic-set
          set-count)
 
+;; A Similar Set keeps track of a set of incomprable elements of a lattice.
+;;
+;; Determining for a given Y if there exists some X in the similar set such that
+;; X >= Y takes O(1) time.
+;;
+;; This is used in the CFA2 algorithm to quickly determine if the implications
+;; of a given BalancedPath have already been, or are already queued to be
+;; explored. The implications of a given BalancedPath have already been or are
+;; already queued to be explored if that BalancedPath is in the Paths set or a
+;; BalancedPath which is lattice-information-theoretically greater than is in
+;; the Paths set.
 
 ;; (make-set [Hash AState [Option Astate]])
 ;; The ht is a hash table whose equality predicate checks for state similarity,
