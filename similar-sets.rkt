@@ -57,8 +57,8 @@
       ((some value)
        (when (= (set-count (set-remove/similar s value)) (set-count s))
          (error 'set-get-one/rest
-                "The set should have decreased in size but did not (value ~v, set ~v)"
-                value set))
+                "The set should have decreased in size but did not value: ~v"
+                value))
        (some (list value (set-remove/similar s value))))
       ((none) (none)))))
 (define (set-contains/similar? s v)
