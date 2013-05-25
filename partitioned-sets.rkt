@@ -193,8 +193,13 @@
          (partition (dict-ref ht v (set))))
     (if (set-empty? partition)
         s
-        (partitioned-set (dict-set ht v (set-remove partition v))))))
+        (let ((partition-w/o-v (set-remove partition v)))
+          (if (set-empty? partition-w/o-v)
+              (partitioned-set (dict-remove ht v))
+              (partitioned-set (dict-set ht v partition-w/o-v)))))))
 (module+ test
+  (check-true (= 0 (dict-count (partitioned-set-ht
+                                (pset-remove (pset-add mt-pset 5) 5)))))
   (check-true (pset-empty? (pset-remove mt-pset 5)))
   (check-true (pset-empty? (pset-remove (pset-add mt-pset 5) 5)))
   (check-false (pset-empty? (pset-add (pset-remove mt-pset 5) 5)))
