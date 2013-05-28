@@ -11,6 +11,7 @@
          pset-partition-count
          pset-remove
          pset-get-one/rest
+         pset->set
          in-pset
          in-pset-partitions)
 (module+ test (require rackunit))
@@ -28,11 +29,13 @@
 ;; represented by this PartitionedSet
 
 ;; Sequence Producers
+(define (pset->set ps)
+  (for/fold
+      ((s (set)))
+      ((partition (in-dict-values (partitioned-set-ht ps))))
+    (set-union s partition)))
 (define (in-pset s)
-  (in-set (for/fold
-              ((s (set)))
-              ((partition (in-dict-values (partitioned-set-ht s))))
-            (set-union s partition))))
+  (in-set (pset->set s)))
 (define (in-pset-partitions s)
   (in-dict-values (partitioned-set-ht s)))
 ;; Writer
