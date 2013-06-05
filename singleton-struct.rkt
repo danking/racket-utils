@@ -10,4 +10,6 @@
            (name name?)
            (let ()
              (struct name () others ...)
-             (values (name) name?)))))))
+             (let ((representative (name)))
+               (values representative
+                       (lambda (x) (eq? representative x))))))))))
